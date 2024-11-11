@@ -5,14 +5,14 @@ interface ImageSearchSlice {
   image: any;
   searchTopic: string;
   isImageLoading: boolean;
-  isModalVisible: boolean;
+  isSearchModalVisible: boolean;
 }
 
 const initialState: ImageSearchSlice = {
   image: null,
   searchTopic: '',
   isImageLoading: false,
-  isModalVisible: true,
+  isSearchModalVisible: false,
 };
 
 // const initialState: ImageSearchSlice = {
@@ -31,14 +31,14 @@ export const imageSearchSlice = createSlice({
   name: 'imageSearch',
   initialState,
   reducers: {
-    setImage: (state, action: PayloadAction<null>) => {
+    setImage: (state, action: PayloadAction<any>) => {
       state.image = action.payload;
     },
     setIsImageLoading: (state, action: PayloadAction<boolean>) => {
       state.isImageLoading = action.payload;
     },
-    setIsModalVisible: (state, action: PayloadAction<boolean>) => {
-      state.isModalVisible = action.payload;
+    setIsSearchModalVisible: (state, action: PayloadAction<boolean>) => {
+      state.isSearchModalVisible = action.payload;
     },
     setSearchTopic: (state, action: PayloadAction<string>) => {
       state.searchTopic = action.payload;
@@ -46,6 +46,7 @@ export const imageSearchSlice = createSlice({
   },
 });
 
-export const { setImage, setIsImageLoading, setIsModalVisible, setSearchTopic } = imageSearchSlice.actions;
+export const { setImage, setIsImageLoading, setIsSearchModalVisible, setSearchTopic } =
+  imageSearchSlice.actions;
 
 export default imageSearchSlice.reducer;

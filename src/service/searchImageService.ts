@@ -13,7 +13,7 @@ export const getPhotoByQuery = async (
       `${UNSPLASH_ROOT}/photos/random?query=${query}&client_id=${clientId}&per_page=1`,
     );
 
-    onSuccess(data.results[0]);
+    onSuccess(data);
   } catch (error) {
     console.log(error);
     onFail();

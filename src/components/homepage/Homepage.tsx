@@ -1,12 +1,18 @@
 import { useFormik } from 'formik';
 import { Topics } from '../../types';
 import { useAppDispatch } from '../../store/hook';
-import { setIsImageLoading, setIsModalVisible, setSearchTopic } from '../../slices/imageSearchSlice';
-import { Box, Button, MenuItem, Select, styled, TextField } from '@mui/material';
+import {
+  setImage,
+  setIsImageLoading,
+  setIsSearchModalVisible,
+  setSearchTopic,
+} from '../../slices/imageSearchSlice';
+import { Box, Button, MenuItem, styled, TextField } from '@mui/material';
 import { searchImageInitialValues, searchImageValidationSchema } from '../../utils/formik-utils';
-import { useEffect } from 'react';
 import { getPhotoByQuery } from '../../service/searchImageService';
 import ImageModal from './image-modal/ImageModal';
+import { clearNameData, setIsCardModalVisible, setNameData } from '../../slices/cardViewSlice';
+import CardModal from './card-modal/CardModal';
 
 const StyledBox = styled(Box)({
   marginTop: '150px',
@@ -41,11 +47,25 @@ const StyledButton = styled(Button)({
 const Homepage = () => {
   const dispatch = useAppDispatch();
 
+  const onFetchImageSuccess = (image: any) => {
+    dispatch(setImage(image));
+    dispatch(setIsImageLoading(false));
+  };
+
+  const onFetchImageFail = () => {
+    dispatch(setIsImageLoading(false));
+  };
+
   const onSubmitForm = (values: any): any => {
     dispatch(setSearchTopic(values.topic === Topics.OTHER ? values.otherTopic : values.topic));
+    dispatch(setIsSearchModalVisible(true));
     dispatch(setIsImageLoading(true));
-    dispatch(setIsModalVisible(true));
-    formik.setStatus('sub');
+    dispatch(setNameData({ name: values.name, surname: values.surname }));
+    getPhotoByQuery(
+      values.topic !== Topics.OTHER ? values.topic : values.otherTopic,
+      onFetchImageSuccess,
+      onFetchImageFail,
+    );
   };
 
   const formik = useFormik({
@@ -55,10 +75,17 @@ const Homepage = () => {
     enableReinitialize: true,
   });
 
-  const onCloseModal = () => {
-    dispatch(setIsModalVisible(false));
+  const onCloseSearchModal = () => {
+    dispatch(setIsSearchModalVisible(false));
     dispatch(setIsImageLoading(false));
+    dispatch(setImage(null));
     formik.resetForm();
+  };
+
+  const onCloseCardModal = () => {
+    dispatch(setIsCardModalVisible(false));
+    dispatch(clearNameData());
+    onCloseSearchModal();
   };
 
   return (
@@ -134,7 +161,8 @@ const Homepage = () => {
           </StyledButton>
         </StyledForm>
       </StyledBox>
-      <ImageModal onClose={onCloseModal} />
+      <ImageModal onClose={onCloseSearchModal} />
+      <CardModal onClose={onCloseCardModal} />
     </>
   );
 };

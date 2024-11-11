@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../store/hook';
 import { Box, Button, Modal, Paper, Skeleton, styled } from '@mui/material';
-import { setImage, setIsImageLoading, setIsModalVisible } from '../../../slices/imageSearchSlice';
+import { setImage, setIsImageLoading, setIsSearchModalVisible } from '../../../slices/imageSearchSlice';
 import { getPhotoByQuery } from '../../../service/searchImageService';
+import { setImageThumbnail, setIsCardModalVisible } from '../../../slices/cardViewSlice';
 
 const RootBox = styled(Box)({
   maxWidth: '1080px',
@@ -62,12 +63,14 @@ type Props = {
 };
 
 const ImageModal: React.FC<Props> = ({ onClose }) => {
-  const { isImageLoading, isModalVisible, image, searchTopic } = useAppSelector((state) => state.imageSearch);
+  const { isImageLoading, isSearchModalVisible, image, searchTopic } = useAppSelector(
+    (state) => state.imageSearch,
+  );
   const dispatch = useAppDispatch();
 
   const onFetchImageSuccess = (image: any) => {
-    dispatch(setImage(image));
     dispatch(setIsImageLoading(false));
+    dispatch(setImage(image));
   };
 
   const onFetchImageFail = () => {
@@ -79,20 +82,21 @@ const ImageModal: React.FC<Props> = ({ onClose }) => {
     getPhotoByQuery(searchTopic, onFetchImageSuccess, onFetchImageFail);
   };
 
-  const onAccept = () => {};
-
-  useEffect(() => {
-    onFetchImage();
-  }, []);
+  const onAccept = () => {
+    dispatch(setIsSearchModalVisible(false));
+    dispatch(setImageThumbnail(image.urls.thumb));
+    dispatch(setIsCardModalVisible(true));
+    onClose();
+  };
 
   return (
-    <Modal open={isModalVisible} onClose={onClose}>
+    <Modal open={isSearchModalVisible} onClose={onClose}>
       <RootBox>
         {isImageLoading || !image ? (
-          <Skeleton variant="rectangular" animation="pulse" width={1080} height={720} />
+          <Skeleton variant="rectangular" animation="wave" width={1080} height={720} />
         ) : (
           <Paper variant="elevation">
-            <img src={image?.urls?.regular} alt={searchTopic} />
+            <img src={image?.urls?.regular} alt={searchTopic} style={{ maxHeight: 720 }} />
           </Paper>
         )}
 
