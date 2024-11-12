@@ -33,6 +33,7 @@ export const imageSearchSlice = createSlice({
   reducers: {
     setImage: (state, action: PayloadAction<any>) => {
       state.image = action.payload;
+      state.isImageLoading = false;
     },
     setIsImageLoading: (state, action: PayloadAction<boolean>) => {
       state.isImageLoading = action.payload;

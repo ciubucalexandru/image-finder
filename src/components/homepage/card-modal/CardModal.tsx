@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAppSelector } from '../../../store/hook';
-import { Box, Card, CardContent, CardHeader, CardMedia, Modal, styled, Typography } from '@mui/material';
+import { Card, CardContent, CardMedia, Modal, styled, Typography } from '@mui/material';
 
 const RootCard = styled(Card)({
   width: '200px',

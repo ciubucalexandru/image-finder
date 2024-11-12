@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useAppDispatch, useAppSelector } from '../../../store/hook';
 import { Box, Button, Modal, Paper, Skeleton, styled } from '@mui/material';
 import { setImage, setIsImageLoading, setIsSearchModalVisible } from '../../../slices/imageSearchSlice';
@@ -69,7 +69,6 @@ const ImageModal: React.FC<Props> = ({ onClose }) => {
   const dispatch = useAppDispatch();
 
   const onFetchImageSuccess = (image: any) => {
-    dispatch(setIsImageLoading(false));
     dispatch(setImage(image));
   };
 
@@ -99,7 +98,6 @@ const ImageModal: React.FC<Props> = ({ onClose }) => {
             <img src={image?.urls?.regular} alt={searchTopic} style={{ maxHeight: 720 }} />
           </Paper>
         )}
-
         <ButtonBox>
           <RejectButton onClick={onFetchImage} disabled={isImageLoading || !image}>
             Reject
