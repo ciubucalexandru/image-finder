@@ -1,5 +1,5 @@
 import * as yup from 'yup';
-import { Topics } from '../types';
+import { Topics } from './types';
 
 export const searchImageValidationSchema = yup.object({
   name: yup.string().min(2, 'Name should be at least two character long').required('Name is required'),

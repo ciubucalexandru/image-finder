@@ -1,9 +1,9 @@
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '../../../store/hook';
 import { Box, Button, Modal, Paper, Skeleton, styled } from '@mui/material';
-import { setImage, setIsImageLoading, setIsSearchModalVisible } from '../../../slices/imageSearchSlice';
-import { getPhotoByQuery } from '../../../service/searchImageService';
+import { setIsImageLoading, setIsSearchModalVisible } from '../../../slices/imageSearchSlice';
 import { setImageThumbnail, setIsCardModalVisible } from '../../../slices/cardViewSlice';
+import { getPhotoByQuery } from '../../../thunks/imageSearchThunk';
 
 const RootBox = styled(Box)({
   maxWidth: '1080px',
@@ -68,17 +68,9 @@ const ImageModal: React.FC<Props> = ({ onClose }) => {
   );
   const dispatch = useAppDispatch();
 
-  const onFetchImageSuccess = (image: any) => {
-    dispatch(setImage(image));
-  };
-
-  const onFetchImageFail = () => {
-    dispatch(setIsImageLoading(false));
-  };
-
   const onFetchImage = () => {
     dispatch(setIsImageLoading(true));
-    getPhotoByQuery(searchTopic, onFetchImageSuccess, onFetchImageFail);
+    dispatch(getPhotoByQuery({ query: searchTopic }));
   };
 
   const onAccept = () => {

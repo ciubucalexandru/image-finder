@@ -1,18 +1,14 @@
+import { ElementRef, useEffect, useRef } from 'react';
 import { useFormik } from 'formik';
-import { Topics } from '../../types';
+import { Topics } from '../../utils/types';
 import { useAppDispatch } from '../../store/hook';
-import {
-  setImage,
-  setIsImageLoading,
-  setIsSearchModalVisible,
-  setSearchTopic,
-} from '../../slices/imageSearchSlice';
+import { setImage, setIsImageLoading, setIsSearchModalVisible } from '../../slices/imageSearchSlice';
 import { Box, Button, MenuItem, styled, TextField } from '@mui/material';
 import { searchImageInitialValues, searchImageValidationSchema } from '../../utils/formik-utils';
-import { getPhotoByQuery } from '../../service/searchImageService';
 import ImageModal from './image-modal/ImageModal';
 import { clearNameData, setIsCardModalVisible, setNameData } from '../../slices/cardViewSlice';
 import CardModal from './card-modal/CardModal';
+import { getPhotoByQuery } from '../../thunks/imageSearchThunk';
 
 const StyledBox = styled(Box)({
   marginTop: '150px',
@@ -47,24 +43,13 @@ const StyledButton = styled(Button)({
 const Homepage = () => {
   const dispatch = useAppDispatch();
 
-  const onFetchImageSuccess = (image: any) => {
-    dispatch(setImage(image));
-    dispatch(setIsImageLoading(false));
-  };
-
-  const onFetchImageFail = () => {
-    dispatch(setIsImageLoading(false));
-  };
-
   const onSubmitForm = (values: any): any => {
-    dispatch(setSearchTopic(values.topic === Topics.OTHER ? values.otherTopic : values.topic));
     dispatch(setIsSearchModalVisible(true));
-    dispatch(setIsImageLoading(true));
     dispatch(setNameData({ name: values.name, surname: values.surname }));
-    getPhotoByQuery(
-      values.topic !== Topics.OTHER ? values.topic : values.otherTopic,
-      onFetchImageSuccess,
-      onFetchImageFail,
+    dispatch(
+      getPhotoByQuery({
+        query: values.topic !== Topics.OTHER ? values.topic : values.otherTopic,
+      }),
     );
   };
 
@@ -103,6 +88,7 @@ const Homepage = () => {
             error={formik.touched.name && Boolean(formik.errors.name)}
             helperText={(formik.touched.name && formik.errors.name) || ' '}
             disabled={formik.isSubmitting}
+            autoFocus
           />
           <StyledTextField
             fullWidth

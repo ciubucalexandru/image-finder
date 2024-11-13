@@ -1,5 +1,6 @@
-import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
+import { createAppSlice } from '../store/hook';
+import { getPhotoByQuery } from '../thunks/imageSearchThunk';
 
 interface ImageSearchSlice {
   image: any;
@@ -15,6 +16,7 @@ const initialState: ImageSearchSlice = {
   isSearchModalVisible: false,
 };
 
+// This code will be used as alternative in case the api is not available on testing
 // const initialState: ImageSearchSlice = {
 //   image: {
 //     urls: {
@@ -27,7 +29,7 @@ const initialState: ImageSearchSlice = {
 //   isModalVisible: true,
 // };
 
-export const imageSearchSlice = createSlice({
+export const imageSearchSlice = createAppSlice({
   name: 'imageSearch',
   initialState,
   reducers: {
@@ -44,6 +46,19 @@ export const imageSearchSlice = createSlice({
     setSearchTopic: (state, action: PayloadAction<string>) => {
       state.searchTopic = action.payload;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(getPhotoByQuery.pending, (state) => {
+      state.isImageLoading = true;
+    });
+    builder.addCase(getPhotoByQuery.fulfilled, (state, action) => {
+      state.isImageLoading = false;
+      state.image = action.payload;
+    });
+    builder.addCase(getPhotoByQuery.rejected, (state, action) => {
+      state.isImageLoading = false;
+      console.log(action.payload);
+    });
   },
 });
 

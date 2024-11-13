@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import Thumbnail from '../thumbnail.jpg';
+import { createAppSlice } from '../store/hook';
 
 interface CardViewSlice {
   name: string;
@@ -16,7 +17,7 @@ const initialState: CardViewSlice = {
   isCardModalVisible: false,
 };
 
-export const cardViewSlice = createSlice({
+export const cardViewSlice = createAppSlice({
   name: 'cardView',
   initialState,
   reducers: {
